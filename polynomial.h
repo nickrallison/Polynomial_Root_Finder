@@ -29,14 +29,12 @@ public:
         std::cout << "\n";
         std::cout << "Enter Terms Highest to Lowest Order\n x^2 + 3x + 2 --> 1, 3, 2\n";
         complex term;
-        this->gm.initgm(1.5, 0.1);
+        this->gm.initgm(10, 0.05);
 
 
         for (int i = 0; i <= order; i++) {
             std::cout << "Real Part of Term: ";
             std::cin >> term.real;
-            std::cout << "Imaginary Part of Term: ";
-            std::cin >> term.imag;
             pml.push_back(term);
         }
 
