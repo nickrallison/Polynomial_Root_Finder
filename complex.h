@@ -5,16 +5,13 @@
 #ifndef ROOTFINDER_COMPLEX_H
 #define ROOTFINDER_COMPLEX_H
 
-#define ERRORTERM 101010
-
 class complex {
 public:
-    double real;
-    double imag;
-    complex() {
-        this->real = 1;
-        this->imag = 0;
-    }
+    double real = 0;
+    double imag = 0;
+    int smallStep = 0;
+    int badIteration = 0;
+
 
     void printz() {
         std::cout << this->real << " + " << this->imag << 'i' << '\n';
@@ -25,6 +22,12 @@ complex addition(complex z1, complex z2) {
     complex result;
     result.real = z1.real + z2.real;
     result.imag = z1.imag + z2.imag;
+    return result;
+}
+complex sub(complex z1, complex z2) {
+    complex result;
+    result.real = z1.real - z2.real;
+    result.imag = z1.imag - z2.imag;
     return result;
 }
 
@@ -71,7 +74,7 @@ complex div(complex z1, complex z2) {
     return result;
 }
 bool err(complex z) {
-    if (z.real == ERRORTERM && z.imag == ERRORTERM) {
+    if (z.badIteration == 1) {
         return 1;
     }
     return 0;
