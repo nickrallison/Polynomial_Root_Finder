@@ -6,7 +6,7 @@
 #define ROOTFINDER_POLYNOMIAL_H
 
 #define SMALLSTEP 0.001
-#define CONVERGERAD 0.0001
+#define BADPDIV 0.1
 
 #include <iostream>
 #include <vector>
@@ -14,12 +14,18 @@
 #include "complex.h"
 #include "guessMatrix.h"
 
+// INFO
+//   Implements polynomial class alongside related methods and
+//   to use newtons method in its internal guessMatrix obj to find roots of the above polynomial
+
 class polynomial {
 public:
     int order;
+    int badpdiv = 0;
     std::vector<complex> pml;
     std::vector<complex> derivative;
     std::vector<complex> rootList;
+    std::vector<complex> officialRootList;
     guessMatrix gm;
     guessMatrix roots;
 
@@ -56,6 +62,11 @@ public:
     }
 
     complex pmlvalue(complex z) {
+        // REQUIRES
+        //
+        // PROMISES
+        //   Returns evaluation of objects internal polynomial at point z
+
         complex value;
         value.real = 0;
         value.imag = 0;
@@ -65,6 +76,11 @@ public:
         return value;
     }
     complex derivvalue(complex z) {
+        // REQUIRES
+        //
+        // PROMISES
+        //   Returns evaluation of objects internal polynomial derivative at point z
+
         complex value;
         value.real = 0;
         value.imag = 0;
@@ -75,6 +91,13 @@ public:
     }
 
     complex newtonsGuess(complex z0) { // Test if P'(z0) = 0
+        // REQUIRES
+        //
+        // PROMISES
+        //   Returns newtons iteration on given complex number
+        //   Returns same number with bad iteration flag when you would divide by 0 in newtons method
+        //   Also sets smallStepFlag to 1 with a sufficiently small iteration (watching for convergence)
+
         complex z1;
         complex polyPrimeVal = derivvalue(z0);
         complex polyVal = pmlvalue(z0);
@@ -90,6 +113,13 @@ public:
         return z1;
     }
     void iterateGuessMatrix() {
+        // REQUIRES
+        //
+        // PROMISES
+        //   Performs newtons iteration on guessMatrix
+        //   Also removes bad iteration steps
+
+
         int j = 0;
         for (int i = 0; i < this->gm.guesslist.size(); i++) {
             complex z1;
@@ -106,6 +136,11 @@ public:
     }
 
     void convergenceTest() {
+        // REQUIRES
+        //
+        // PROMISES
+        //   Adds numbers with small step size to new guessMatrix
+
         complex root;
         complex iteration;
         root.real = 0;
@@ -127,14 +162,17 @@ public:
     }
 
     complex findARoot(complex z0) {
+        // REQUIRES
+        //
+        // PROMISES
+        //   Performs newtowns iteration multiple times on single complex number for more precision
+        //   Stops when step size is less than a predefined prescision
+
         double precision = 0.000001;
         double stepSize = 1;
         complex prevGuess;
-        complex currentGuess = z0;              // Make a guess of the root, pretend its a circle,
-                                        // position it on a point, if the point exits the circle,
-                                        // it moves to the new point, if it doesn't consider every point in that circle
-                                        // Newtons iterate those points
-                                        // Shrink Circle at one point
+        complex currentGuess = z0;
+
         while (stepSize > precision) {
             prevGuess = currentGuess;
             currentGuess = newtonsGuess(currentGuess); //Watch for
@@ -145,7 +183,14 @@ public:
         }
         return currentGuess;
     }
+
     complex pruneListFromRoot(complex z, double radius) {
+        // REQUIRES
+        //
+        // PROMISES
+        //   Removes every root from list not close enough to given root
+        //   Given root found from above findARoot method
+
         int j = 0;
         for (int i = 0; i < this->roots.guesslist.size(); i++) {
             if (mag(sub(z, this->roots.guesslist[i - j])) < radius) {
@@ -157,10 +202,16 @@ public:
     }
 
     void cleanRoots() {
+        // REQUIRES
+        //
+        // PROMISES
+        //   Performs pruneListFromRoot method until it has only the same number of roots as its order
+        //   sets final rootList equal to second guessMatrix's internal list
+
         complex root;
         for (int i = 0; this->roots.guesslist.size() > order; i++) {
             root = findARoot(this->roots.guesslist[0]);
-            this->roots.guesslist.push_back(pruneListFromRoot(root, 0.05));
+            this->roots.guesslist.push_back(this->pruneListFromRoot(root, 0.1));
         }
         this->rootList = this->roots.guesslist;
     }

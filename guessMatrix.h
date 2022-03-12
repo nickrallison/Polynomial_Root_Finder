@@ -9,19 +9,23 @@
 #include <vector>
 #include "complex.h"
 
+// INFO
+//   Sets up grid of complex numbers at a given spacing and a max radius
+//   Used to iterate newtons method and look for convergence
+
 class guessMatrix {
 public:
     std::vector<complex> guesslist;
-    int nperlen;
-    double effecRad;
+    int nperlen; //Side length of Grid (Number of points)
+    double effectiveRad;
     double spacing;
 
     void initgm(double radius, double spacing0) {
         this->spacing = spacing0;
-        this->nperlen = floor(2 * radius / spacing + 1);// max radius
-        this->effecRad = ((double) this->nperlen - 1) / 2 * this->spacing;
-        for (double i = -1 * this->effecRad; i <= this->effecRad; i += this->spacing) {       // Vert
-            for (double j = -1 * this->effecRad; j <= this->effecRad; j += this->spacing) {   // Horiz
+        this->nperlen = floor(2 * radius / spacing + 1); // Finds number of points along one side of grid
+        this->effectiveRad = ((double) this->nperlen - 1) / 2 * this->spacing;
+        for (double i = -1 * this->effectiveRad; i <= this->effectiveRad; i += this->spacing) {       // Vert
+            for (double j = -1 * this->effectiveRad; j <= this->effectiveRad; j += this->spacing) {   // Horiz
                 complex value;
                 value.real = j;
                 value.imag = i;

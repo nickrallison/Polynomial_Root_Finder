@@ -5,6 +5,9 @@
 #ifndef ROOTFINDER_COMPLEX_H
 #define ROOTFINDER_COMPLEX_H
 
+// INFO
+//   Implements arithmetic operations for complex number class
+
 class complex {
 public:
     double real = 0;
@@ -73,11 +76,22 @@ complex div(complex z1, complex z2) {
     result = scalar(pow(mag(z2), -2), mult(z1, conj(z2)));
     return result;
 }
+
+
 bool err(complex z) {
+    // INFO
+    //   Used in newtons iteration, set to one when step size should be infinite
+    // REQUIRES
+    //
+    // PROMISES
+    //
+
     if (z.badIteration == 1) {
         return 1;
     }
     return 0;
 }
+
+
 
 #endif //ROOTFINDER_COMPLEX_H
