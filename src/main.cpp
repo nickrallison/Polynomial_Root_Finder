@@ -1,9 +1,11 @@
 #include <iostream>
 #include <vector>
-#include "polynomial.h"
+#include "../include/Polynomial.h"
+
+
 
 int main() {
-    polynomial pml;
+    Polynomial pml;
     pml.initPML();
 
     pml.iterateGuessMatrix();
